@@ -1,3 +1,10 @@
 from pandas import Series
+from matplotlib import python 
+from django.http import HttpResponse
 
-series = Series.from_csv("example.csv", header = 0)
+
+
+def oyku(request):
+    series = Series.from_csv("example.csv", header = 0)
+    series.plot()
+    return HttpResponse(str(series))

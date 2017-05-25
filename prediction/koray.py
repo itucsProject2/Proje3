@@ -1,10 +1,13 @@
 import pandas as pd
+import numpy as np
 from django.http import HttpResponse
 from matplotlib import pyplot
 from statsmodels.tsa.ar_model import AR
 from statsmodels.tsa.arima_model import ARIMA
 from pprint import pprint
 import xlrd
+from sklearn.metrics import mean_squared_error
+from numpy.linalg import  LinAlgError
 
 def koray(request):
     #fields = ['Gun', 'SatisMiktari']
@@ -16,16 +19,25 @@ def koray(request):
     pprint(df.head(25))
     #df.plot()
     #pyplot.show()
+    data = df
+    pprint("DATA")
+    pprint(data)
     pprint("SONUC")
-    for i in range(len(df)):
+    X = data.values
+    train, test = X[1:len(X)-2], X[len(X)-2:]
+    model = AR(train)
+    model_fit = model.fit()
+    predictions = model_fit.predict(start = len(train), end = len(train)+len(test)-1, dynamic = False)
+    
+    for i in range(len(predictions)):
         #fitting
-        model  = ARIMA(df, order = (30, 2, 0))
-        model_fit = model.fit(disp = 0) # disp = 0, debug info gostermiyor
+        #model  = ARIMA(data, order = (5, 2, 0))
+        #model_fit = model.fit() # disp = 0, debug info gostermiyor
         #pprint(model_fit.summary())
         #plot
-        outcome = model_fit.forecast()
-        #pprint("SONUC")
-        pprint(outcome[0])
+        #outcome = model_fit.forecast()
+        pprint("SONUC")
+        pprint(predictions[i])
     
     #model = AR(df)
     #model_fit = model.fit()

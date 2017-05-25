@@ -157,7 +157,7 @@ def arrange():
 # haftalik
 
 # aylik
-    aygunsayar = 12 *[0]
+    aygunsayar = [30,30,31,31,30,31,30,31,31,28,31,16]
     a1 = 12 *[0]
     a2 = 12 *[0]
     aylar = ["May", "Haz", "Tem", "Agu", "Eyl", "Eki" , "Kas", "Ara", "Oca", "Sub", "Mar", "Nis"]
@@ -171,39 +171,55 @@ def arrange():
         else:
             ay = ay - 5
             
-        aygunsayar[ay] += 1
-        
         if d['kod'] == 35000212:
             a1[ay] += d['miktar']
         elif d['kod'] == 31001045:
             a2[ay] += d['miktar']
-
+            
+            
+    sheet3.write_column('D1', a1,format)
+    sheet3.write_column('E1', a2,format)
+    
+    
     for i in range(0,12):
         a1[i] = a1[i] / aygunsayar[i]
         a2[i] = a2[i] / aygunsayar[i]
         
-    sheet3.write_column('A1', aylar)
-    sheet3.write_column('B1', a1)
-    sheet3.write_column('C1', a2)
+    sheet3.write_column('A1', aylar,format)
+    sheet3.write_column('B1', a1,format)
+    sheet3.write_column('C1', a2,format)
     
-    chartay = book.add_chart({'type': 'column'})
+    chartay = book.add_chart({'type': 'line'})
     chartay.add_series({
         'values': ['Aylik', 0, 1, 11, 1],
          'categories' : ['Aylik', 0, 0, 11, 0],
-         'column' : {'color': 'blue'},
-         'name' : 'Urun 1',
+         'line' : {'color': 'blue'},
+         'name' : 'Urun 1 - Gunluk',
         })
     
     chartay.add_series({
         'values': ['Aylik', 0, 2, 11, 2],
-         'column' : {'color': 'red'},
-         'name' : 'Urun 2',
+         'line' : {'color': 'red'},
+         'name' : 'Urun 2 - Gunluk',
         })
+    
+    chartay.add_series({
+        'values': ['Aylik', 0, 3, 11, 3],
+         'line' : {'color': 'green'},
+         'name' : 'Urun 1 - Aylik',
+        })
+    
+    chartay.add_series({
+        'values': ['Aylik', 0, 4, 11, 4],
+         'line' : {'color': 'yellow'},
+         'name' : 'Urun 2 - Aylik',
+        })
+    
     chartay.set_size({'x_scale' : 2, 'y_scale' : 1.5})
     chartay.set_title({
-    'name': '1 Gundeki Ortalama Satis Miktari',
+    'name': 'Ortalama Satis Miktari',
 })
-    sheet3.insert_chart('D1', chartay)
+    sheet3.insert_chart('F1', chartay)
 # aylik
          
     chart = book.add_chart({'type': 'line'})

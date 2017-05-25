@@ -7,6 +7,10 @@ from prediction.models import Data, Date_Group
 from pprint import pprint
 import xlsxwriter
 
+
+def showGraph(request):
+    return render(request, 'index.html')
+
 def readData(request):
     if Data.objects.all().count() > 20:
          arrange()

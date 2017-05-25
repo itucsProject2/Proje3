@@ -15,10 +15,11 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from prediction import views, koray
+from prediction import views, koray, oyku
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.readData),
     url(r'^koray/', koray.koray),
+    url(r'^oyku/',oyku.oyku)
 ]

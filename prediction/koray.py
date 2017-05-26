@@ -10,10 +10,10 @@ from sklearn.metrics import mean_squared_error
 from numpy.linalg import  LinAlgError
 
 #def koray(request):
-def koray():
+def prediction():
     xl = pd.ExcelFile("temp.xlsx")
     adata = xl.parse("Sayfa1", header=0, parse_cols=[0, 1], index_col= 0, converters={'a':float}, squeeze=True)
-    bdata = xl.parse("Sayfa1", header=0, parse_cols=[0, 2], index_col= 0, converters={0:float}, skiprows = 51, squeeze=True)
+    bdata = xl.parse("Sayfa1", header=0, parse_cols=[0, 2], index_col= 0, converters={'b':float}, squeeze=True)
     
     pprint('adata')
     pprint(adata)
@@ -25,7 +25,7 @@ def koray():
         if i == 0:
             data = adata
         elif i == 1:
-            data == bdata
+            data = bdata
             
         pprint("DATA")
         pprint(data)

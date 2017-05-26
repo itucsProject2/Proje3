@@ -59,9 +59,15 @@ def arrange():
     haftac = 0;
     haftaici = [0] * 200
     haftasonu = [0] * 200
+    hafta = [0] * 200
     for i in range(0, 2):
         if i==1:
             haftac = counter
+            sheet2.write(counter,0,counter,format)
+            sheet2.write(counter,1,0,format)
+            sheet2.write(counter,2,0,format)
+            sheet2.write(counter,3,0,format)
+            counter+=1
         date = datetime.date(2016,5,2)
         j = 1
         dcount = 0
@@ -93,15 +99,17 @@ def arrange():
             if i==0 or i==1:
                 if (dcount % 7) == 0:
                     haftasonu[counter] = haftasonu[counter] + sum
+                    hafta[counter] = haftasonu[counter] + haftaici[counter]
                     haftasonu[counter] = haftasonu[counter] / 2
                     haftaici[counter] = haftaici[counter] / 5
                     if i==1:
-                        sheet2.write(counter,0,counter-haftac+1,format)
+                        sheet2.write(counter,0,counter-haftac,format)
                     else:
                         sheet2.write(counter,0,counter,format)
                         
                     sheet2.write(counter,1,haftaici[counter],format)
                     sheet2.write(counter,2,haftasonu[counter],format)
+                    sheet2.write(counter,3,hafta[counter],format)
                     counter+=1
                 elif dcount % 7 < 6:
                     haftaici[counter] = haftaici[counter] + sum
@@ -109,13 +117,15 @@ def arrange():
                     haftasonu[counter] = haftasonu[counter] + sum 
                 
             date = date + timedelta(days = 1)   
-            
+    
 # haftalik
     # urun 1
     charthafta1 = book.add_chart({'type' : 'column'})
+    
     sheet2.write(0,0,'Hafta',hformat)
-    sheet2.write(0,1,'Urun 1',hformat)
-    sheet2.write(0,2,'Urun 2',hformat)
+    sheet2.write(0,1,'H. Ici Ort',hformat)
+    sheet2.write(0,2,'H. Sonu Ort',hformat)
+    sheet2.write(0,3,'Toplam',hformat)
     
     charthafta1.add_series({
          'values': ['Haftalik', 1, 1, haftac, 1],
@@ -160,6 +170,31 @@ def arrange():
 })
     charthafta2.set_size({'x_scale' : 3})
     sheet2.insert_chart('E19', charthafta2)
+    
+    charthafta = book.add_chart({'type' : 'line'})
+    
+    charthafta.add_series({
+         'values': ['Haftalik', 1, 3, haftac, 3],
+         'categories' : ['Haftalik', 1, 0, haftac, 0],
+         'line' : {'color': 'blue'},
+         'name' : '1. Urun',
+            })
+    charthafta.add_series({
+         'values': ['Haftalik', haftac+1, 3, counter, 3],
+         'linr' : {'color': 'red'},
+         'name' : '2. Urun',
+            })
+    charthafta.set_title({
+    'name': 'Haftalik Toplam',
+})
+    charthafta.set_size({'x_scale' : 3})
+    charthafta.set_x_axis({
+    'name': 'Hafta',
+    'num_font':  {'italic': True },
+})
+
+    sheet2.insert_chart('E34', charthafta)
+    
 # haftalik
 
 # aylik

@@ -46,7 +46,7 @@ def arrange():
     format.set_align('center')
     format.set_align('vcenter')
 
-    sheet1 = book.add_worksheet('Alinan Veriler')
+    sheet1 = book.add_worksheet('Gunluk')
     sheet2 = book.add_worksheet('Haftalik')
     sheet3 = book.add_worksheet('Aylik')
     sheet4 = book.add_worksheet('Sonuclar')
@@ -333,18 +333,16 @@ def arrange():
 })
     sheet4.insert_chart('F23', charts2)
 #sonuclar
-
-
          
     chart = book.add_chart({'type': 'line'})
     chart.add_series({
-         'values': ['Alinan Veriler', 1, 1, dcount-1, 1],
-         'categories' : ['Alinan Veriler', 1, 0, dcount-1, 0],
+         'values': ['Gunluk', 1, 1, dcount-1, 1],
+         'categories' : ['Gunluk', 1, 0, dcount-1, 0],
          'line' : {'color': 'blue'},
          'name' : 'Urun 1',
             })
     chart.add_series({
-         'values': ['Alinan Veriler', 1, 2, dcount-1, 2],
+         'values': ['Gunluk', 1, 2, dcount-1, 2],
          'line' : {'color': 'red'},
          'name' : 'Urun 2',
             })
@@ -354,8 +352,6 @@ def arrange():
     chart.set_size({'x_scale' : 3, 'y_scale' : 1.5})
     sheet1.set_column(0, 0, 15)
     sheet1.insert_chart('D1', chart)
-
-
 
     book.close()
 

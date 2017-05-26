@@ -9,8 +9,8 @@ import xlrd
 from sklearn.metrics import mean_squared_error
 from numpy.linalg import  LinAlgError
 
-#def koray(request):
-def prediction():
+def koray(request):
+#def prediction():
     xl = pd.ExcelFile("temp.xlsx")
     adata = xl.parse("Sayfa1", header=0, parse_cols=[0, 1], index_col= 0, converters={'a':float}, squeeze=True)
     bdata = xl.parse("Sayfa1", header=0, parse_cols=[0, 2], index_col= 0, converters={'b':float}, squeeze=True)
@@ -21,6 +21,7 @@ def prediction():
     pprint(bdata)
 
     predictions = list()
+    predictionsb = list()
     for i in range(0, 2):
         if i == 0:
             data = adata
@@ -50,10 +51,14 @@ def prediction():
             #pprint(model_fit.summary())
             #plot
             outcome = model_fit.forecast()
-            predictions.append(outcome[0])
+            if i == 0:
+                predictions = [outcome[0]] + predictions
+            elif i == 1:
+                predictionsb = [outcome[0]] + predictionsb
             count = data.count()
             data = data.drop(data.index[count-1])
-
+            
+        predictions = predictions + predictionsb
         pprint("Sonuc")
         for j in range(0, len(predictions)):
             pprint(predictions[j])
@@ -62,5 +67,5 @@ def prediction():
     #model_fit = model.fit()
     #prediction = model_fit.predict(start = len(dataset, end = len(dataset)))
     #pprint(str(prediction))
-    return predictions
-    #return HttpResponse("OPTUM CANIM")
+    #return predictions
+    return HttpResponse("OPTUM CANIM")

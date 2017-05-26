@@ -20,6 +20,6 @@ from prediction import views, koray, oyku
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.readData),
-    url(r'^koray/', koray.koray),
+    url(r'^koray/', koray.prediction),
     url(r'^oyku/',oyku.oyku)
 ]

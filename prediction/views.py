@@ -6,15 +6,15 @@ from django.http import HttpResponse
 from prediction.models import Data, Date_Group
 from pprint import pprint
 import xlsxwriter
-
-
+from math import fabs,fsum
+from prediction.koray import prediction
 def showGraph(request):
     return render(request, 'index.html')
 
 def readData(request):
     if Data.objects.all().count() > 20:
          arrange()
-         return HttpResponse("Calisiyo hocam devam et")
+         return HttpResponse("Sonuclar output.xlsx'de")
     else:
          Data.objects.all().delete()
          #pprint('readDataya girdik')
@@ -279,20 +279,27 @@ def arrange():
 # aylik
 
 #sonuclar
-    #pprint(hafta)
+    pred = prediction()
+
     sheet4.write(0,0,'Hafta',hformat)
     sheet4.write(0,1,'Urun 1 - Asil',hformat)
     sheet4.write(0,2,'Urun 1 - Tahmin',hformat)
-    sheet4.write(0,3,'Urun 2 - Asil',hformat)
-    sheet4.write(0,4,'Urun 2 - Tahmin',hformat)
+    sheet4.write(0,3,'Urun 1 - Hata Orani (%)',hformat)
+    sheet4.write(0,4,'Urun 2 - Asil',hformat)
+    sheet4.write(0,5,'Urun 2 - Tahmin',hformat)
+    sheet4.write(0,6,'Urun 2 - Hata Orani (%)',hformat)
+    sheet4.write(0,7,'Urun 1 - Ort Hata Orani(%)',hformat)
+    sheet4.write(0,8,'Urun 2 - Ort Hata Orani(%)',hformat)
+    sheet4.set_column(1, 2, 16)
+    sheet4.set_column(3, 3, 20)
+    sheet4.set_column(4, 5, 16)
+    sheet4.set_column(6, 8, 24)
     
-    sheet4.set_column(1, 4, 16)
-
     sheet4.write_column('A2',list(range(39,51)),format)  
     sheet4.write_column('B2',hafta[38:50],format)  
-    #sheet4.write_column('C2',,format)  
-    sheet4.write_column('D2',hafta[89:101],format)  
-    #sheet4.write_column('E2',,format)
+    sheet4.write_column('C2',pred[0:12],format)  
+    sheet4.write_column('E2',hafta[89:101],format)  
+    sheet4.write_column('F2',pred[12:24],format)
     
     charts1 = book.add_chart({'type': 'column'})
     charts1.add_series({
@@ -312,17 +319,20 @@ def arrange():
     'name': 'Hafta',
     'num_font':  {'italic': True },
 })
-    sheet4.insert_chart('F1', charts1)
+    charts1.set_title({
+    'name': 'Urun 1',
+})
+    sheet4.insert_chart('A14', charts1)
     
     charts2 = book.add_chart({'type': 'column'})
     charts2.add_series({
-         'values': ['Sonuclar', 1, 3, 12, 3],
+         'values': ['Sonuclar', 1, 4, 12, 4],
          'categories' : ['Sonuclar', 1, 0, 12, 0],
          'line' : {'color': 'blue'},
          'name' : 'Beklenen',
             })  
     charts2.add_series({
-         'values': ['Sonuclar', 1, 4, 12, 4],
+         'values': ['Sonuclar', 1, 5, 12, 5],
          'line' : {'color': 'blue'},
          'name' : 'Bulunan',
             }) 
@@ -331,9 +341,23 @@ def arrange():
     'name': 'Hafta',
     'num_font':  {'italic': True },
 })
-    sheet4.insert_chart('F23', charts2)
+    charts2.set_title({
+    'name': 'Urun 2',
+})
+    sheet4.insert_chart('A36', charts2)
 #sonuclar
-         
+    hata1 = 12 * [0]
+    hata2 = 12 * [0]
+    for i in range(0,12):
+        hata1[i] = (abs(pred[i] - hafta[i+38]) / hafta[i+38]) * 100
+        hata2[i] = (abs(pred[i+12] - hafta[i+89]) / hafta[i+89]) * 100
+        
+    ht1 = fsum(hata1) / float(len(hata1))
+    ht2 = fsum(hata2) / float(len(hata2))
+    sheet4.write(1,7,ht1,format)
+    sheet4.write(1,8,ht2,format)
+    sheet4.write_column('D2',hata1,format)
+    sheet4.write_column('G2',hata2,format)
     chart = book.add_chart({'type': 'line'})
     chart.add_series({
          'values': ['Gunluk', 1, 1, dcount-1, 1],

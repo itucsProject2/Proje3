@@ -13,7 +13,7 @@ from numpy.linalg import  LinAlgError
 def prediction():
     xl = pd.ExcelFile("temp.xlsx")
     adata = xl.parse("Sayfa1", header=0, parse_cols=[0, 1], index_col= 0, converters={'a':float}, squeeze=True)
-    bdata = xl.parse("Sayfa1", header=0, parse_cols=[0, 2], index_col= 0, converters={'b':float}, squeeze=True)
+    bdata = xl.parse("Sayfa1", header=0, parse_cols= [0, 2], index_col= 0, converters={'b':float}, squeeze=True)
     
     pprint('adata')
     pprint(adata)

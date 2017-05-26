@@ -46,9 +46,10 @@ def arrange():
     format.set_align('center')
     format.set_align('vcenter')
 
-    sheet1 = book.add_worksheet('Alinan Veriler')
+    sheet1 = book.add_worksheet('Gunluk')
     sheet2 = book.add_worksheet('Haftalik')
     sheet3 = book.add_worksheet('Aylik')
+    sheet4 = book.add_worksheet('Sonuclar')
     
     sheet1.write(0,0,'Tarih',hformat)
     sheet1.write(0,1,'Urun 1',hformat)
@@ -102,23 +103,24 @@ def arrange():
                     hafta[counter] = haftasonu[counter] + haftaici[counter]
                     haftasonu[counter] = haftasonu[counter] / 2
                     haftaici[counter] = haftaici[counter] / 5
-                    if i==1:
-                        sheet2.write(counter,0,counter-haftac,format)
-                    else:
-                        sheet2.write(counter,0,counter,format)
-                        
-                    sheet2.write(counter,1,haftaici[counter],format)
-                    sheet2.write(counter,2,haftasonu[counter],format)
-                    sheet2.write(counter,3,hafta[counter],format)
                     counter+=1
                 elif dcount % 7 < 6:
                     haftaici[counter] = haftaici[counter] + sum
                 else:
                     haftasonu[counter] = haftasonu[counter] + sum 
                 
-            date = date + timedelta(days = 1)   
+            date = date + timedelta(days = 1) 
+            
+    sheet2.write_column('A2',list(range(1,haftac)),format)      
+    sheet2.write_column('B2', haftaici[0:haftac],format)
+    sheet2.write_column('C2', haftasonu[0:haftac],format)
+    sheet2.write_column('D2', hafta[0:haftac],format)
+        
+    sheet2.write_column('A52',list(range(1,haftac+1)),format)      
+    sheet2.write_column('B52', haftaici[haftac+1:counter],format)
+    sheet2.write_column('C52', haftasonu[haftac+1:counter],format)
+    sheet2.write_column('D52', hafta[haftac+1:counter],format)
     
-# haftalik
     # urun 1
     charthafta1 = book.add_chart({'type' : 'column'})
     
@@ -126,7 +128,7 @@ def arrange():
     sheet2.write(0,1,'H. Ici Ort',hformat)
     sheet2.write(0,2,'H. Sonu Ort',hformat)
     sheet2.write(0,3,'Toplam',hformat)
-    
+    sheet2.set_column(1, 2, 11)
     charthafta1.add_series({
          'values': ['Haftalik', 1, 1, haftac, 1],
          'categories' : ['Haftalik', 1, 0, haftac, 0],
@@ -276,18 +278,71 @@ def arrange():
     sheet3.insert_chart('F23', chartay2)
 # aylik
 
+#sonuclar
+    #pprint(hafta)
+    sheet4.write(0,0,'Hafta',hformat)
+    sheet4.write(0,1,'Urun 1 - Asil',hformat)
+    sheet4.write(0,2,'Urun 1 - Tahmin',hformat)
+    sheet4.write(0,3,'Urun 2 - Asil',hformat)
+    sheet4.write(0,4,'Urun 2 - Tahmin',hformat)
+    
+    sheet4.set_column(1, 4, 16)
 
-
+    sheet4.write_column('A2',list(range(39,51)),format)  
+    sheet4.write_column('B2',hafta[38:50],format)  
+    #sheet4.write_column('C2',,format)  
+    sheet4.write_column('D2',hafta[89:101],format)  
+    #sheet4.write_column('E2',,format)
+    
+    charts1 = book.add_chart({'type': 'column'})
+    charts1.add_series({
+         'values': ['Sonuclar', 1, 1, 12, 1],
+         'categories' : ['Sonuclar', 1, 0, 12, 0],
+         'line' : {'color': 'blue'},
+         'name' : 'Beklenen',
+            }) 
+    
+    charts1.add_series({
+         'values': ['Sonuclar', 1, 2, 12, 2],
+         'line' : {'color': 'blue'},
+         'name' : 'Bulunan',
+            })   
+    charts1.set_size({'x_scale' : 2, 'y_scale' : 1.5})
+    charts1.set_x_axis({
+    'name': 'Hafta',
+    'num_font':  {'italic': True },
+})
+    sheet4.insert_chart('F1', charts1)
+    
+    charts2 = book.add_chart({'type': 'column'})
+    charts2.add_series({
+         'values': ['Sonuclar', 1, 3, 12, 3],
+         'categories' : ['Sonuclar', 1, 0, 12, 0],
+         'line' : {'color': 'blue'},
+         'name' : 'Beklenen',
+            })  
+    charts2.add_series({
+         'values': ['Sonuclar', 1, 4, 12, 4],
+         'line' : {'color': 'blue'},
+         'name' : 'Bulunan',
+            }) 
+    charts2.set_size({'x_scale' : 2, 'y_scale' : 1.5})
+    charts2.set_x_axis({
+    'name': 'Hafta',
+    'num_font':  {'italic': True },
+})
+    sheet4.insert_chart('F23', charts2)
+#sonuclar
          
     chart = book.add_chart({'type': 'line'})
     chart.add_series({
-         'values': ['Alinan Veriler', 1, 1, dcount-1, 1],
-         'categories' : ['Alinan Veriler', 1, 0, dcount-1, 0],
+         'values': ['Gunluk', 1, 1, dcount-1, 1],
+         'categories' : ['Gunluk', 1, 0, dcount-1, 0],
          'line' : {'color': 'blue'},
          'name' : 'Urun 1',
             })
     chart.add_series({
-         'values': ['Alinan Veriler', 1, 2, dcount-1, 2],
+         'values': ['Gunluk', 1, 2, dcount-1, 2],
          'line' : {'color': 'red'},
          'name' : 'Urun 2',
             })
@@ -297,7 +352,7 @@ def arrange():
     chart.set_size({'x_scale' : 3, 'y_scale' : 1.5})
     sheet1.set_column(0, 0, 15)
     sheet1.insert_chart('D1', chart)
-    
+
     book.close()
 
              

@@ -114,8 +114,8 @@ def arrange():
     # urun 1
     charthafta1 = book.add_chart({'type' : 'column'})
     sheet2.write(0,0,'Hafta',hformat)
-    sheet2.write(0,1,'Urun 1',hformat)
-    sheet2.write(0,2,'Urun 2',hformat)
+    sheet2.write(0,1,'H. Ici Ort',hformat)
+    sheet2.write(0,2,'H. Sonu Ort',hformat)
     
     charthafta1.add_series({
          'values': ['Haftalik', 1, 1, haftac, 1],
